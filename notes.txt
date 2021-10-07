@@ -1,0 +1,67 @@
+## GRPC Multi-processor
+##
+## fake -> processor-host -> processor-spooler -> output-elasticsearch
+##
+## Number of Events - 100/s
+##
+## CPU/Memory Usage
+## input-fake - 0.7% - 8MB
+## processor-host - 0.5% - 8MB
+## processor-spooler - 1.8% - 10MB
+## output-elasticsearch - 0.5% - 14MB
+##
+## {"level":"trace","component":"fake","node":"c5aru4d94811k7aac7og","dur":0.530452,"evts":100,"time":1633009448,"message":"sending events to next node"}
+## {"level":"trace","component":"processor-host","node":"c5aru4d94811k7aac7p0","dur":0.009414,"evts":100,"time":1633009448,"message":"received events from previous node"}
+## {"level":"trace","component":"processor-host","node":"c5aru4d94811k7aac7p0","dur":1.625582,"evts":100,"time":1633009448,"message":"sending events to next node"}
+## {"level":"trace","component":"processor-spooler","node":"c5aru4l94811k7aac7pg","dur":0.005492,"evts":100,"time":1633009448,"message":"received events from previous node"}
+## {"level":"trace","component":"processor-spooler","node":"c5aru4l94811k7aac7pg","dur":1.755253,"evts":100,"time":1633009448,"message":"added to spool"}
+## {"level":"trace","component":"processor-spooler","node":"c5aru4l94811k7aac7pg","dur":1.949821,"evts":50,"time":1633009449,"message":"sending events to next node"}
+## {"level":"trace","component":"elasticsearch","node":"c5aru4l94811k7aac7q0","dur":0.003099,"evts":50,"time":1633009449,"message":"received events from previous node"}
+## {"level":"trace","component":"elasticsearch","node":"c5aru4l94811k7aac7q0","took":8,"rtt":13.387339,"hasErrors":false,"cnt":50,"bufSz":48496,"bodySz":9335,"time":1633009449,"message":"bulk create"}
+## {"level":"trace","component":"processor-spooler","node":"c5aru4l94811k7aac7pg","dur":1.077197,"evts":50,"time":1633009449,"message":"sending events to next node"}
+## {"level":"trace","component":"elasticsearch","node":"c5aru4l94811k7aac7q0","dur":0.002736,"evts":50,"time":1633009449,"message":"received events from previous node"}
+## {"level":"trace","component":"elasticsearch","node":"c5aru4l94811k7aac7q0","took":15,"rtt":19.958675,"hasErrors":false,"cnt":50,"bufSz":48496,"bodySz":9336,"time":1633009449,"message":"bulk create"}
+
+## Non-GRPC Single-processor (JSON Encoded)
+##
+## fake -> processor-host -> processor-spooler -> output-elasticsearch
+##
+## Number of Events - 100/s
+##
+## CPU/Memory Usage
+## elastic-agent - 2% - 11.5MB
+##
+
+## Non-GRPC Single-processor (Direct)
+##
+## fake -> processor-host -> processor-spooler -> output-elasticsearch
+##
+## Number of Events - 100/s
+##
+## CPU/Memory Usage
+## elastic-agent - 1.5% - 11.5MB
+##
+
+##
+## Inside Connection (GRPC same process)
+##
+## BenchmarkInside-16    	       1	1722894907 ns/op	23034672 B/op	   86020 allocs/op
+##
+## Execution time - 1s 726ms
+##
+
+##
+## Direct Encode Connection (no GRPC/with encode)
+##
+## BenchmarkDirectEncoded-16       1	1427773920 ns/op	18073320 B/op	   67634 allocs/op
+##
+## Execution time - 1s 705ms
+##
+
+##
+## Direct Connection (no GRPC/no encode)
+##
+## BenchmarkDirect-16    	       1	1828675728 ns/op	22673664 B/op	   76252 allocs/op
+##
+## Execution time - 1s 775ms
+##

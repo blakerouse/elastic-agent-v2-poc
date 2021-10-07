@@ -1,0 +1,79 @@
+// Licensed to Elasticsearch B.V. under one or more contributor
+// license agreements. See the NOTICE file distributed with
+// this work for additional information regarding copyright
+// ownership. Elasticsearch B.V. licenses this file to you under
+// the Apache License, Version 2.0 (the "License"); you may
+// not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+syntax = "proto3";
+
+package proto;
+
+option cc_enable_arenas = true;
+option go_package = "pkg/proto;proto";
+
+// Agent tells the component how to connect back to agent so it can
+// be controlled and provide its status information.
+message Agent {
+  // GRPC connection address.
+  string addr = 1;
+  // ZName to use when connecting.
+  string server_name = 2;
+  // Unique token identifier for component.
+  string token = 3;
+  // CA certificate.
+  bytes ca_cert = 4;
+  // Peer certificate.
+  bytes peer_cert = 5;
+  // Peer private key.
+  bytes peer_key = 6;
+}
+
+// Receive tells the component how to receive events from
+// another component. When defined then the component must
+// open a GRPC endpoint with the given information.
+message Receive {
+  // GRPC connection receive address.
+  string addr = 1;
+  // CA certificate.
+  bytes ca_cert = 2;
+  // Peer certificate.
+  bytes peer_cert = 3;
+  // Peer private key.
+  bytes peer_key = 4;
+}
+
+// Send tells the component to send the events to another component.
+// When defined the component must open a GRPC connection with the
+// given information.
+message Send {
+  // GRPC connection address.
+  string addr = 1;
+  // Name to use when connecting.
+  string server_name = 2;
+  // CA certificate.
+  bytes ca_cert = 3;
+  // Peer certificate.
+  bytes peer_cert = 4;
+  // Peer private key.
+  bytes peer_key = 5;
+}
+
+// Node is the main body of the message sent to a component from stdin on
+// how it should act as a node in a pipeline.
+message Node {
+  string ID = 1;
+  Agent agent = 2;
+  Receive receive = 3;
+  Send send = 4;
+}
